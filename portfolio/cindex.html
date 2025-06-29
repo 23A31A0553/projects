@@ -1,0 +1,704 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>My Certifications</title>
+  <style>
+    /* Reset */
+    *, *::before, *::after {
+      box-sizing: border-box;
+    }
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: #eef2f8;
+      color: #222;
+      scroll-behavior: smooth;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      min-height: 100vh;
+    }
+    /* Visually hidden for accessibility */
+    .sr-only {
+      position: absolute !important;
+      width: 1px !important;
+      height: 1px !important;
+      padding: 0 !important;
+      margin: -1px !important;
+      overflow: hidden !important;
+      clip: rect(0,0,0,0) !important;
+      border: 0 !important;
+    }
+
+    /* Header */
+    header {
+      background-color: #005bbb;
+      color: white;
+      padding: 1rem 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: fixed;
+      top: 0;
+      width: 100%;
+      z-index: 1000;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+      user-select: none;
+      gap:1rem;
+      flex-wrap: wrap;
+    }
+
+    header h1 {
+      flex: 1 1 auto;
+      font-size: 1.5rem;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      margin: 0;
+      white-space: nowrap;
+    }
+
+    .back-button {
+      background: transparent;
+      border: 2px solid white;
+      color: white;
+      padding: 0.3rem 0.85rem;
+      border-radius: 6px;
+      font-size: 1rem;
+      cursor: pointer;
+      user-select: none;
+      transition: background-color 0.2s ease, color 0.2s ease;
+      flex-shrink: 0;
+    }
+
+    .back-button:hover,
+    .back-button:focus-visible {
+      background-color: white;
+      color: #005bbb;
+      outline-offset: 2px;
+      outline: 2px solid #005bbb;
+    }
+
+    nav.cert-nav {
+      flex: 1 1 auto;
+      display: flex;
+      justify-content: flex-end;
+      gap: 1rem;
+    }
+
+    nav.cert-nav a {
+      color: white;
+      text-decoration: none;
+      font-weight: 600;
+      border: 2px solid transparent;
+      padding: 0.3rem 0.85rem;
+      border-radius: 6px;
+      user-select: none;
+      transition: background-color 0.2s ease, border-color 0.2s ease;
+    }
+    nav.cert-nav a:hover,
+    nav.cert-nav a:focus-visible {
+      background-color: #ffffffaa;
+      border-color: white;
+      outline: none;
+    }
+
+    /* Main container */
+    main {
+      max-width: 1240px;
+      margin: auto;
+      padding: 130px 1rem 3rem;
+    }
+
+    /* Filter container for new filter button and dropdown */
+    .filter-container {
+      display: flex;
+      justify-content: flex-end;
+      margin-bottom: 1.75rem;
+      position: relative;
+      user-select: none;
+    }
+    .filter-button {
+      background-color: white;
+      border: 2px solid #005bbb;
+      color: #005bbb;
+      padding: 0.55rem 1.4rem;
+      font-size: 1rem;
+      font-weight: 600;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: background-color 0.3s ease, color 0.3s ease;
+    }
+    .filter-button:hover,
+    .filter-button:focus-visible {
+      background-color: #005bbb;
+      color: white;
+      outline: none;
+    }
+
+    .filter-dropdown {
+      position: absolute;
+      top: 110%;
+      right: 0;
+      background: white;
+      border: 2px solid #005bbb;
+      border-radius: 6px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.15);
+      display: none;
+      flex-direction: column;
+      width: 180px;
+      z-index: 100;
+    }
+    .filter-dropdown.active {
+      display: flex;
+    }
+    .filter-dropdown button {
+      background: transparent;
+      border: none;
+      padding: 0.6rem 1rem;
+      color: #005bbb;
+      font-size: 1rem;
+      font-weight: 600;
+      text-align: left;
+      cursor: pointer;
+      transition: background-color 0.2s ease;
+    }
+    .filter-dropdown button:hover,
+    .filter-dropdown button:focus-visible {
+      background-color: #005bbb;
+      color: white;
+      outline: none;
+    }
+
+    /* Certificates grid */
+    .certificates {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 24px;
+      user-select: none;
+    }
+
+    @media (max-width: 900px) {
+      .certificates {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+    @media (max-width: 600px) {
+      .certificates {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* Certificate card */
+    .certificate-card {
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 6px 16px rgba(0,0,0,0.1);
+      cursor: pointer;
+      text-align: center;
+      padding: 0.75rem;
+      transition: transform 0.25s ease, box-shadow 0.25s ease;
+      outline-offset: 4px;
+    }
+
+    .certificate-card:hover,
+    .certificate-card:focus-visible {
+      transform: translateY(-5px);
+      box-shadow: 0 10px 28px rgba(0,0,0,0.18);
+      outline: 3px solid #005bbb;
+    }
+
+    .certificate-card img {
+      max-width: 100%;
+      height: 180px;
+      object-fit: contain;
+      border-radius: 8px;
+      margin-bottom: 0.8rem;
+      user-select: none;
+      pointer-events: none;
+    }
+
+    .certificate-card p {
+      font-weight: 600;
+      font-size: 1rem;
+      color: #333;
+      margin: 0;
+      user-select: text;
+    }
+
+    /* Modal styles */
+    .modal {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background-color: rgba(0,0,0,0.85);
+      justify-content: center;
+      align-items: center;
+      z-index: 11000;
+      padding: 1rem;
+      user-select: none;
+      overflow: auto;
+    }
+
+    .modal.active {
+      display: flex;
+    }
+
+    .modal-content {
+      background: white;
+      border-radius: 10px;
+      max-width: 900px;
+      width: 90vw;
+      max-height: 90vh;
+      overflow-y: auto;
+      box-shadow: 0 12px 40px rgba(0,0,0,0.3);
+      position: relative;
+      padding: 1.8rem 2.5rem;
+      display: flex;
+      gap: 2rem;
+      flex-wrap: wrap;
+      user-select: text;
+    }
+
+    .modal-body {
+      display: flex;
+      flex-direction: row;
+      flex-wrap: wrap;
+      gap: 2rem;
+      width: 100%;
+      justify-content: center;
+      align-items: flex-start;
+      user-select: text;
+    }
+
+    .cert-image {
+      width: 100%;
+      max-width: 480px;
+      max-height: 80vh;
+      border-radius: 12px;
+      box-shadow: 0 6px 24px rgba(0,0,0,0.25);
+      object-fit: contain;
+      user-select: none;
+      pointer-events: none;
+    }
+
+    .cert-info {
+      flex: 1 1 300px;
+      max-width: 420px;
+      user-select: text;
+    }
+
+    .cert-info h2 {
+      margin-top: 0;
+      font-size: 1.9rem;
+      color: #222;
+      margin-bottom: 0.75rem;
+      font-weight: 900;
+    }
+
+    .cert-info p {
+      color: #444;
+      font-size: 1rem;
+      line-height: 1.5;
+      margin-bottom: 1rem;
+      word-wrap: break-word;
+    }
+
+    .cert-info strong {
+      font-weight: 700;
+    }
+
+    .profile-pic {
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      margin-bottom: 1rem;
+      border: 3px solid #005bbb;
+      object-fit: cover;
+      user-select: none;
+      pointer-events: none;
+    }
+
+    .close {
+      position: absolute;
+      top: 16px;
+      right: 24px;
+      font-size: 2.8rem;
+      cursor: pointer;
+      background: none;
+      border: none;
+      color: #444;
+      user-select: none;
+      line-height: 1;
+      transition: color 0.25s ease;
+    }
+
+    .close:hover,
+    .close:focus-visible {
+      color: #d33;
+      outline: none;
+    }
+
+    /* Responsive modal adjustments */
+    @media (max-width: 840px) {
+      .modal-content {
+        flex-direction: column;
+        padding: 1.2rem 1.5rem;
+        max-height: 85vh;
+      }
+      .modal-body {
+        flex-direction: column;
+        align-items: center;
+        gap: 1.5rem;
+      }
+      .cert-info {
+        max-width: 100%;
+      }
+      .cert-image {
+        max-width: 100%;
+        max-height: 55vh;
+      }
+    }
+
+    /* Scrollbar for modal content */
+    .modal-content::-webkit-scrollbar, .modal-body::-webkit-scrollbar {
+      width: 8px;
+    }
+    .modal-content::-webkit-scrollbar-thumb, .modal-body::-webkit-scrollbar-thumb {
+      background-color: #005bbb99;
+      border-radius: 4px;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>
+      <button class="back-button" type="button" onclick="history.back()" aria-label="Go back to previous page">← Back</button>
+      My Certifications
+    </h1>
+    <nav class="cert-nav" aria-label="Certificate page navigation">
+    </nav>
+  </header>
+
+  <main>
+
+    <section id="filter" aria-labelledby="filter-heading">
+      <h2 id="filter-heading" class="sr-only">Filter Certifications</h2>
+      <div class="filter-container">
+        <button class="filter-button" type="button" aria-haspopup="true" aria-expanded="false" id="filterBtn">
+          Filter ▼
+        </button>
+        <div class="filter-dropdown" role="menu" aria-label="Filter options" id="filterDropdown" tabindex="-1">
+          <button role="menuitem" type="button" data-filter="all">All</button>
+          <button role="menuitem" type="button" data-filter="internship">Internship</button>
+          <button role="menuitem" type="button" data-filter="courses">Courses</button>
+          <button role="menuitem" type="button" data-filter="workshops">Workshops</button>
+          <button role="menuitem" type="button" data-filter="other">Other</button>
+        </div>
+      </div>
+    </section>
+
+<section class="certificates">
+    <!-- Course Certificate -->
+    <div class="certificate-card" data-category="courses" onclick="openModal('cert1')">
+      <img src="pics/linkedin html css js.png" alt="Certificate 1" />
+      <p>HTML, CSS, JavaScript - LinkedIn</p>
+    </div>
+        <div class="certificate-card" data-category="courses" onclick="openModal('cert2')">
+      <img src="pics/edx.png" alt="Certificate 2" />
+      <p>Cybersecurity - edX</p>
+    </div>
+
+    <!-- Internship Certificate -->
+
+          <div class="certificate-card" data-category="internship" onclick="openModal('cert5')">
+      <img src="pics/23A31A0553(cohort 7)_page-0001.jpg" alt="Certificate 5" />
+      <p>Uipath - AICTE</p>
+    </div>
+        <div class="certificate-card" data-category="internship" onclick="openModal('cert6')">
+      <img src="pics/23A31A0553(cohort 8)_page-0001.jpg" alt="Certificate 6" />
+      <p>Fortinet - AICTE</p>
+    </div>
+        <div class="certificate-card" data-category="internship" onclick="openModal('cert7')">
+      <img src="pics/23A31A0553(cohort 9)_page-0001.jpg" alt="Certificate 7" />
+      <p>Zscaler - AICTE</p>
+    </div>
+        <div class="certificate-card" data-category="internship" onclick="openModal('cert8')">
+      <img src="pics/23A31A0553(cohort 10)_page-0001.jpg" alt="Certificate 8" />
+      <p>Google for Developer - AICTE</p>
+    </div>
+        <div class="certificate-card" data-category="internship" onclick="openModal('cert9')">
+      <img src="pics/23A31A0553(cohort11)_page-0001.jpg" alt="Certificate 9" />
+      <p>AWS academy(Data Engineering) - AICTE</p>
+    </div>
+        <div class="certificate-card" data-category="internship" onclick="openModal('cert10')">
+      <img src="pics/Penugonda   Devashish  cohort 12_page-0001.jpg" alt="Certificate 10" />
+      <p>AWS academy(AI-ML) - AICTE</p>
+    </div>
+
+    <!-- Course Certificate -->
+    <div class="certificate-card" data-category="courses" onclick="openModal('cert3')">
+      <img src="pics/infosys sb python.png" alt="Certificate 3" />
+      <p>Basic Python - Infosys</p>
+    </div>
+
+    <!-- Workshop Certificate -->
+    <div class="certificate-card" data-category="workshops" onclick="openModal('cert4')">
+      <img src="pics/azure fundamental.png" alt="Certificate 4" />
+      <p>Azure Fundamental - Microsoft</p>
+    </div>
+  </section>
+
+
+  <!-- Modals (You can add more as needed) -->
+  <div id="cert1" class="modal">
+    <div class="modal-content">
+      <span class="close" onclick="closeModal('cert1')">&times;</span>
+      <div class="modal-body">
+        <img src="pics/linkedin html css js.png" class="cert-image" alt="Certificate Full" />
+        <div class="cert-info">
+          <img src="pics/Picsart_25-05-24_20-55-26-485.jpg" class="profile-pic" alt="Devashish" />
+          <h2>HTML, CSS, JavaScript</h2>
+          <p><strong>Issued by:</strong> LinkedIn Learning</p>
+          <p><strong>Description:</strong> Learned responsive web development using HTML, CSS, and JavaScript with best practices.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="cert2" class="modal">
+    <div class="modal-content">
+      <span class="close" onclick="closeModal('cert2')">&times;</span>
+      <div class="modal-body">
+        <img src="pics/edx.png" class="cert-image" alt="Certificate Full" />
+        <div class="cert-info">
+          <img src="pics/Picsart_25-05-24_20-55-26-485.jpg" class="profile-pic" alt="Devashish" />
+          <h2>Fundamentals of Cybersecurity</h2>
+          <p><strong>Issued by:</strong> edX (AICTE)</p>
+          <p><strong>Description:</strong> Covered foundational cybersecurity principles, digital threats, and security strategies.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="cert3" class="modal">
+    <div class="modal-content">
+      <span class="close" onclick="closeModal('cert3')">&times;</span>
+      <div class="modal-body">
+        <img src="pics/infosys sb python.png" class="cert-image" alt="Certificate Full" />
+        <div class="cert-info">
+          <img src="pics/Picsart_25-05-24_20-55-26-485.jpg" class="profile-pic" alt="Devashish" />
+          <h2>Basic Python</h2>
+          <p><strong>Issued by:</strong> Infosys Springboard</p>
+          <p><strong>Description:</strong> Learned core programming concepts: variables, data types, operators, loops, and functions through hands-on exercises.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="cert4" class="modal">
+    <div class="modal-content">
+      <span class="close" onclick="closeModal('cert4')">&times;</span>
+      <div class="modal-body">
+        <img src="pics/azure fundamental.png" class="cert-image" alt="Azure Fundamentals Certificate" />
+        <div class="cert-info">
+          <img src="pics/Picsart_25-05-24_20-55-26-485.jpg" class="profile-pic" alt="Devashish" />
+          <h2>Microsoft Azure Fundamentals</h2>
+          <p><strong>Issued by:</strong> Microsoft / LinkedIn Learning</p>
+          <p><strong>Description:</strong> Covered core cloud services, Azure architecture, identity, pricing models, and compliance essentials.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+    <div id="cert5" class="modal">
+    <div class="modal-content">
+      <span class="close" onclick="closeModal('cert5')">&times;</span>
+      <div class="modal-body">
+        <img src="pics/23A31A0553(cohort 7)_page-0001.jpg" class="cert-image" alt="RPA Developer Virtual Internship" />
+        <div class="cert-info">
+          <img src="pics/Picsart_25-05-24_20-55-26-485.jpg" class="profile-pic" alt="Devashish" />
+          <h2>RPA Developer Virtual Internship</h2>
+          <p><strong>Issued by:</strong> AICTE & EduSkills, supported by UiPath</p>
+          <p><strong>Description:</strong>Successfully completed a 10-week virtual internship focused on Robotic Process Automation (RPA). Gained hands-on experience in building automation workflows, understanding UiPath Studio components, and deploying simple automation tasks using industry-standard RPA tools.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+     <div id="cert6" class="modal">
+    <div class="modal-content">
+      <span class="close" onclick="closeModal('cert6')">&times;</span>
+      <div class="modal-body">
+        <img src="pics/23A31A0553(cohort 8)_page-0001.jpg" class="cert-image" alt="Network Security Associate Virtual Internship" />
+        <div class="cert-info">
+          <img src="pics/Picsart_25-05-24_20-55-26-485.jpg" class="profile-pic" alt="Devashish" />
+          <h2>Network Security Associate Virtual Internship</h2>
+          <p><strong>Issued by:</strong> AICTE & EduSkills, supported by Fortinet</p>
+          <p><strong>Description:</strong> Completed a 10-week internship on network security principles using Fortinet tools. Acquired skills in firewall configurations, threat detection, network monitoring, and basic FortiGate operations to build a secure digital infrastructure.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="cert7" class="modal">
+    <div class="modal-content">
+      <span class="close" onclick="closeModal('cert7')">&times;</span>
+      <div class="modal-body">
+        <img src="pics/23A31A0553(cohort 9)_page-0001.jpg" class="cert-image" alt="Zero Trust Cloud Security Virtual Internship" />
+        <div class="cert-info">
+          <img src="pics/Picsart_25-05-24_20-55-26-485.jpg" class="profile-pic" alt="Devashish" />
+          <h2>Zero Trust Cloud Security Virtual Internship</h2>
+          <p><strong>Issued by:</strong> AICTE & EduSkills, supported by Zscaler</p>
+          <p><strong>Description:</strong> Successfully completed a 10-week internship focused on Zero Trust cloud security architecture. Gained practical knowledge on secure access, cloud-based threat prevention, data protection strategies, and implementing security models without relying on traditional network perimeters.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="cert8" class="modal">
+    <div class="modal-content">
+      <span class="close" onclick="closeModal('cert8')">&times;</span>
+      <div class="modal-body">
+        <img src="pics/23A31A0553(cohort 10)_page-0001.jpg" class="cert-image" alt="Android Developer Virtual Internship" />
+        <div class="cert-info">
+          <img src="pics/Picsart_25-05-24_20-55-26-485.jpg" class="profile-pic" alt="Devashish" />
+          <h2>Android Developer Virtual Internship</h2>
+          <p><strong>Issued by:</strong> AICTE & EduSkills, supported by Google for Developers</p>
+          <p><strong>Description:</strong> Completed an intensive 10-week internship on Android application development. Learned the fundamentals of Kotlin, UI/UX principles, Android Studio environment, and best practices for creating scalable and interactive mobile applications.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="cert9" class="modal">
+    <div class="modal-content">
+      <span class="close" onclick="closeModal('cert9')">&times;</span>
+      <div class="modal-body">
+        <img src="pics/23A31A0553(cohort11)_page-0001.jpg" class="cert-image" alt="Data Engineering Virtual Internship" />
+        <div class="cert-info">
+          <img src="pics/Picsart_25-05-24_20-55-26-485.jpg" class="profile-pic" alt="Devashish" />
+          <h2>Data Engineering Virtual Internship</h2>
+          <p><strong>Issued by:</strong> AICTE & EduSkills, curriculum provided by AWS Academy</p>
+          <p><strong>Description:</strong> Completed a 10-week internship focusing on data engineering concepts. Developed skills in data pipelines, ETL processes, AWS cloud data services, and scalable data storage architectures for analytics and processing.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="cert10" class="modal">
+    <div class="modal-content">
+      <span class="close" onclick="closeModal('cert10')">&times;</span>
+      <div class="modal-body">
+        <img src="pics/Penugonda   Devashish  cohort 12_page-0001.jpg" class="cert-image" alt="AI-ML Virtual Internship" />
+        <div class="cert-info">
+          <img src="pics/Picsart_25-05-24_20-55-26-485.jpg" class="profile-pic" alt="Devashish" />
+          <h2>AI-ML Virtual Internship</h2>
+          <p><strong>Issued by:</strong> AICTE & EduSkills, curriculum provided by AWS Academy</p>
+          <p><strong>Description:</strong> Engaged in a 10-week virtual internship focused on Artificial Intelligence and Machine Learning. Covered machine learning algorithms, AWS SageMaker, data preprocessing techniques, model training, and deployment in real-world cloud environments.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  </main>
+
+  <script>
+    const filterBtn = document.getElementById('filterBtn');
+    const filterDropdown = document.getElementById('filterDropdown');
+    const filterButtons = filterDropdown.querySelectorAll('button');
+    const certificates = document.querySelectorAll('.certificate-card');
+
+    // Toggle dropdown visibility
+    filterBtn.addEventListener('click', () => {
+      const expanded = filterBtn.getAttribute('aria-expanded') === 'true';
+      filterBtn.setAttribute('aria-expanded', String(!expanded));
+      filterDropdown.classList.toggle('active');
+      if (!expanded) {
+        filterDropdown.focus();
+      }
+    });
+
+    // Close dropdown when clicking outside
+    document.addEventListener('click', (e) => {
+      if (!filterBtn.contains(e.target) && !filterDropdown.contains(e.target)) {
+        filterDropdown.classList.remove('active');
+        filterBtn.setAttribute('aria-expanded', 'false');
+      }
+    });
+
+    // Keyboard navigation: close dropdown on Escape
+    filterDropdown.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') {
+        filterDropdown.classList.remove('active');
+        filterBtn.setAttribute('aria-expanded', 'false');
+        filterBtn.focus();
+      }
+    });
+
+    // Filter action
+    filterButtons.forEach(button => {
+      button.addEventListener('click', () => {
+        const category = button.dataset.filter;
+        certificates.forEach(card => {
+          const cardCategory = card.getAttribute('data-category');
+          if (category === 'all' || cardCategory === category) {
+            card.style.display = 'block';
+          } else {
+            card.style.display = 'none';
+          }
+        });
+        filterDropdown.classList.remove('active');
+        filterBtn.setAttribute('aria-expanded', 'false');
+        filterBtn.focus();
+      });
+    });
+
+    // Modal open/close functions
+    function openModal(id) {
+      const modal = document.getElementById(id);
+      if(!modal) return;
+      modal.style.display = "flex";
+      modal.setAttribute('aria-hidden', 'false');
+      modal.focus();
+      const cards = document.querySelectorAll('.certificate-card');
+      cards.forEach(c => {
+        c.setAttribute('aria-pressed', c.getAttribute('onclick')?.includes(id) ? 'true' : 'false');
+      });
+    }
+
+    function closeModal(id) {
+      const modal = document.getElementById(id);
+      if(!modal) return;
+      modal.style.display = "none";
+      modal.setAttribute('aria-hidden', 'true');
+      const cards = document.querySelectorAll('.certificate-card');
+      cards.forEach(c => c.setAttribute('aria-pressed', 'false'));
+    }
+
+    // Close modal clicking outside modal content
+    window.onclick = function(event) {
+      const modals = document.querySelectorAll('.modal');
+      modals.forEach(modal => {
+        if(event.target === modal){
+          modal.style.display = "none";
+          modal.setAttribute('aria-hidden', 'true');
+        }
+      });
+    };
+
+    // Close modal on Escape key
+    window.addEventListener('keydown', e => {
+      if(e.key === 'Escape'){
+        const modals = document.querySelectorAll('.modal');
+        modals.forEach(modal => {
+          if(modal.style.display === "flex"){
+            modal.style.display = "none";
+            modal.setAttribute('aria-hidden', 'true');
+          }
+        });
+      }
+    });
+  </script>
+</body>
+</html>

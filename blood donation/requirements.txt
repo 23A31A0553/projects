@@ -1,0 +1,8 @@
+flask
+mysql-connector-python
+geopy
+flask-cors
+flask-sqlalchemy
+flask-login
+werkzeug
+email_validator

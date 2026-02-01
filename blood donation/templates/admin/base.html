@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LifeLink Admin Console</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet"
+        href="{{ url_for('static', filename='css/admin_style.css') }}?v={{ range(1, 10000) | random }}">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+
+<body class="admin-body">
+
+    <!-- Sidebar -->
+    <nav class="sidebar">
+        <div class="sidebar-brand">
+            <i class="fas fa-heartbeat"></i> LifeLink Admin
+        </div>
+        <ul class="sidebar-menu">
+            <li><a href="{{ url_for('admin_dashboard') }}" class="active"><i class="fas fa-tachometer-alt"></i>
+                    Dashboard</a></li>
+            <li><a href="{{ url_for('admin_donors') }}"><i class="fas fa-users"></i> Donors</a></li>
+            <li><a href="{{ url_for('admin_requests') }}"><i class="fas fa-notes-medical"></i> Requests</a></li>
+            <li><a href="{{ url_for('manage_hospitals') }}"><i class="fas fa-hospital"></i> Hospitals</a></li>
+            <li><a href="{{ url_for('admin_forecast') }}"><i class="fas fa-brain"></i> AI Forecast</a></li>
+            <li><a href="{{ url_for('admin_audit_logs') }}"><i class="fas fa-history"></i> Audit Logs</a></li>
+            <li><a href="{{ url_for('admin_settings') }}"><i class="fas fa-cog"></i> Settings</a></li>
+        </ul>
+        <div class="sidebar-footer">
+            <a href="{{ url_for('logout') }}"><i class="fas fa-sign-out-alt"></i> Logout</a>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <header class="top-bar">
+            <h2>{% block title %}Dashboard{% endblock %}</h2>
+            <div class="user-info">
+                <span>{{ current_user.username }}</span>
+                <i class="fas fa-user-circle fa-2x"></i>
+            </div>
+        </header>
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+        <div class="flash-messages">
+            {% for category, message in messages %}
+            <div class="alert alert-{{ category }}">{{ message }}</div>
+            {% endfor %}
+        </div>
+        {% endif %}
+        {% endwith %}
+
+        <div class="content-wrapper">
+            {% block content %}{% endblock %}
+        </div>
+    </main>
+
+</body>
+
+</html>

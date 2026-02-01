@@ -1,0 +1,116 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="form-container">
+    <h2 class="text-center" style="margin-bottom: 1.5rem; color: var(--primary);">Donor Registration</h2>
+
+    {% if error %}
+    <div style="background: #ffe3e3; color: #d00000; padding: 10px; border-radius: 4px; margin-bottom: 15px;">
+        {{ error }}
+    </div>
+    {% endif %}
+
+    <form method="POST" action="{{ url_for('register') }}">
+        <div class="form-group">
+            <label>Full Name</label>
+            <input type="text" name="full_name" required>
+        </div>
+
+        <div class="form-group">
+            <label>Mobile Number (Login ID)</label>
+            <input type="tel" name="mobile_number" placeholder="10-digit number" pattern="[0-9]{10}" required>
+        </div>
+
+        <div class="form-group">
+            <label>Password</label>
+            <input type="password" name="password" required>
+        </div>
+
+        <div class="grid" style="grid-template-columns: 1fr 1fr; gap: 1rem;">
+            <div class="form-group">
+                <label>Blood Group</label>
+                <select name="blood_group" required>
+                    <option value="">Select</option>
+                    <option value="A+">A+</option>
+                    <option value="A-">A-</option>
+                    <option value="B+">B+</option>
+                    <option value="B-">B-</option>
+                    <option value="O+">O+</option>
+                    <option value="O-">O-</option>
+                    <option value="AB+">AB+</option>
+                    <option value="AB-">AB-</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Age</label>
+                <input type="number" name="age" min="18" max="65" required>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label>City</label>
+            <input type="text" name="city" required>
+        </div>
+
+        <!-- Hidden Geo Fields -->
+        <input type="hidden" id="lat" name="latitude" value="0.0">
+        <input type="hidden" id="lon" name="longitude" value="0.0">
+        <p class="text-center" style="font-size: 0.9rem; color: #666; margin-bottom: 1rem;">
+            <button type="button" onclick="getLocation()" class="btn btn-secondary" style="font-size: 0.8rem;">📍 Detect
+                My Location</button>
+            <span id="loc-status">Location required</span>
+        </p>
+
+        <div class="form-group">
+            <label>Last Donation Date</label>
+            <input type="date" name="last_donation_date">
+            <small style="color: #666;">Leave empty if never donated.</small>
+        </div>
+
+        <hr style="margin: 1.5rem 0; border: 0; border-top: 1px solid #eee;">
+        <h4 style="margin-bottom: 1rem;">Health & Habits</h4>
+
+        <div class="checkbox-group">
+            <div class="checkbox-item"><input type="checkbox" name="bp"> BP Problem</div>
+            <div class="checkbox-item"><input type="checkbox" name="sugar"> Diabetes/Sugar</div>
+            <div class="checkbox-item"><input type="checkbox" name="heart_disease"> Heart Problem</div>
+            <div class="checkbox-item"><input type="checkbox" name="asthma"> Asthma</div>
+        </div>
+
+        <div class="checkbox-group">
+            <div class="checkbox-item"><input type="checkbox" name="smoking"> Smoker</div>
+            <div class="checkbox-item"><input type="checkbox" name="drinking"> Drink Alcohol</div>
+        </div>
+
+        <button type="submit" class="btn" style="width: 100%; margin-top: 1rem;">Register</button>
+        <p class="text-center mt-2" style="margin-top: 1rem;">
+            Already registered? <a href="{{ url_for('login') }}">Login here</a>
+        </p>
+    </form>
+</div>
+
+<script>
+    function getLocation() {
+        status = document.getElementById('loc-status');
+        if (navigator.geolocation) {
+            status.innerHTML = "Locating...";
+            navigator.geolocation.getCurrentPosition(showPosition, showError);
+        } else {
+            status.innerHTML = "Geolocation is not supported by this browser.";
+        }
+    }
+
+    function showPosition(position) {
+        document.getElementById('lat').value = position.coords.latitude;
+        document.getElementById('lon').value = position.coords.longitude;
+        document.getElementById('loc-status').innerHTML = "✅ Location Locked!";
+        document.getElementById('loc-status').style.color = "green";
+    }
+
+    function showError(error) {
+        document.getElementById('loc-status').innerHTML = "⚠️ Allow Location Access";
+    }
+    // Auto-try on load
+    window.onload = getLocation;
+</script>
+{% endblock %}

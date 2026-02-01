@@ -1,0 +1,11 @@
+INFO: Starting verification of Admin Fixes...
+INFO: Test 1: Forecast Page Load
+INFO: SUCCESS: Forecast page loaded (Syntax Fixed)
+INFO: Test 2: User Deletion with Dependencies
+C:\Users\devas\OneDrive\Desktop\web\my projects\blood donation\verify_admin_fixes.py:51: LegacyAPIWarning: The Query.get() method is considered legacy as of the 1.x series of SQLAlchemy and becomes a legacy construct in 2.0. The method is now available as Session.get() (deprecated since: 2.0) (Background on SQLAlchemy 2.0 at: https://sqlalche.me/e/b8d9)
+  if del_resp.status_code == 200 and not User.query.get(user.id):
+INFO: SUCCESS: User deleted successfully (Dependencies handled)
+INFO: Test 3: Manage Hospitals Page
+INFO: SUCCESS: Manage Hospitals page loaded
+INFO: Test 4: Request Updates
+INFO: SUCCESS: Invalid assignment handled gracefully

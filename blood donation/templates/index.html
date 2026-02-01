@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="hero" style="text-align: center; padding: 4rem 1rem;">
+    <h1 style="font-size: 3rem; color: var(--secondary); margin-bottom: 1rem;">Give the Gift of Life</h1>
+    <p style="font-size: 1.2rem; color: #666; max-width: 600px; margin: 0 auto 2rem;">
+        Connect with donors instantly in your area. Our smart algorithm ensures safe and fast blood matching.
+    </p>
+
+    <div style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
+        <a href="{{ url_for('register') }}" class="btn" style="padding: 1rem 2rem; font-size: 1.2rem;">Become a
+            Donor</a>
+        <a href="{{ url_for('request_blood') }}" class="btn btn-secondary"
+            style="padding: 1rem 2rem; font-size: 1.2rem;">Find
+            Blood</a>
+    </div>
+</div>
+
+<div class="grid mt-2">
+    <div class="card text-center">
+        <h3>🚑 Emergency Requests</h3>
+        <p>Post a request and find donors within minutes.</p>
+    </div>
+    <div class="card text-center">
+        <h3>📍 Smart Location</h3>
+        <p>We use geolocation to find the nearest donors.</p>
+    </div>
+    <div class="card text-center">
+        <h3>🛡️ Safety First</h3>
+        <p>Smart filters ensure only eligible donors are contacted.</p>
+    </div>
+</div>
+{% endblock %}

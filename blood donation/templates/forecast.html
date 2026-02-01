@@ -1,0 +1,55 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="grid">
+    <div class="card">
+        <h2 style="color: var(--secondary);">AI Analytics & Forecast</h2>
+        <p>Predicted blood demand for the next 30 days based on historical trends.</p>
+
+        <div style="margin-top: 2rem;">
+            <h3>Demand Prediction by Group</h3>
+            <div
+                style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 1rem; margin-top: 1rem;">
+                {% for group, level in predictions.items() %}
+                <div style="padding: 1rem; border-radius: 8px; background: #f4f4f4; text-align: center;">
+                    <h1 style="color: var(--primary);">{{ group }}</h1>
+                    <p style="
+                        font-weight: bold; 
+                        color: {{ 'red' if 'Critical' in level else ('orange' if 'High' in level else 'green') }};
+                    ">{{ level }}</p>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+
+        <div style="margin-top: 2rem;">
+            <h3>Expected Emergency Cases (Next 6 Months)</h3>
+            <canvas id="forecastChart"></canvas>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    const ctx = document.getElementById('forecastChart');
+    new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: ['Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul'],
+            datasets: [{
+                label: 'Predicted Emergencies',
+                data: {{ trend| tojson }
+    },
+        borderColor: 'var(--secondary)',
+        tension: 0.4,
+        fill: true,
+        backgroundColor: 'rgba(54, 162, 235, 0.2)'
+            }]
+        }
+    });
+</script>
+
+<div style="margin-top: 2rem;">
+    <a href="{{ url_for('admin_dashboard') }}">&larr; Back to Dashboard</a>
+</div>
+{% endblock %}
